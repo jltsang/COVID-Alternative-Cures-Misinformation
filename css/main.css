@@ -1918,6 +1918,7 @@ input, select, textarea {
 	}
 
 		.box.style1 {
+			flex: 1;
 			padding: 3em 2em 3.5em 2em;
 		}
 
@@ -2367,7 +2368,7 @@ input, select, textarea {
 				}
 
 				.box.style1 {
-					flex: 1 0 32em;
+					max-width: 32em;
 					margin-left: auto !important;
 					margin-right: auto !important;
 				}
