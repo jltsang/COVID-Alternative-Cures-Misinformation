@@ -2443,3 +2443,11 @@ input, select, textarea {
 					}
 
 	}
+	@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+	.code-block {
+		font-family: 'Source Code Pro', monospace;
+		padding: 10px 20px;
+		color: #292929;
+		background-color: #f2f2f2;
+		overflow: scroll;
+	}
