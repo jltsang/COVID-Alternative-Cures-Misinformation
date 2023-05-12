@@ -2446,8 +2446,15 @@ input, select, textarea {
 	@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 	.code-block {
 		font-family: 'Source Code Pro', monospace;
+		margin: 2em 0;
 		padding: 10px 20px;
 		color: #292929;
 		background-color: #f2f2f2;
 		overflow: scroll;
+	}
+	figcaption {
+		font-style: italic;
+		font-size: 0.85rem;
+		padding: 2px;
+		text-align: center;
 	}
