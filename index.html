@@ -261,7 +261,7 @@ for col in ['Following', 'Followers', 'Likes', 'Replies', 'Retweets', 'Quote Twe
 	number_mask = df_dataset[col].astype(str).str.match(whole_number_pattern)
 	print(f"For column \"{col}\": {df_dataset[~number_mask].shape[0]}")</pre>
 							<figure style="text-align: center;">
-								<img src="1c-output1.png" alt="">
+								<img src="1c-output1.png" alt="" style="max-width: 100%;">
 								<figcaption>Output of the codeblock</figcaption>
 							</figure>
 						</div>
@@ -278,7 +278,7 @@ df_dataset = pd.concat([df_dataset, content_type_dummies], axis=1)
 
 print(df_dataset.columns)</pre>
 							<figure style="text-align: center;">
-								<img src="1d-output1.png" alt="">
+								<img src="1d-output1.png" alt=""  style="max-width: 100%;">
 								<figcaption>Columns of the dataframe</figcaption>
 							</figure>
 							<p>This will make it easier to perform analysis and modeling with these variables later on, espcially beside other numerical data.</p>
@@ -438,8 +438,8 @@ fig.update_layout(
 # Show the chart
 fig.show()</pre>
 							<figure>
-								<embed type="text/html" src="bar.html" style="width: 100%; height: 500px;"> 
-								<figcaption style="margin-top: -3em;">Bar graph visualization</figcaption>
+								<embed type="text/html" src="bar.html" style="width: 90%; height: 500px;"> 
+								<figcaption style="margin-top: -30px;">Bar graph visualization</figcaption>
 							</figure>
 							<p>The resulting graph shows some interesting results. The most obvious result is that `Emotional` tweets far outnumber `Rational`. `Transactional` tweets can also be seen to be very rare, with only one instance present. Additionally, most mis/disinformation comes from `Anonymous` account types, followed by `Identified`, and finally `Media` with one instance.</p>
 							<p>A more notable observation is the distribution and ratio of `Emotional` and `Rational` tweets for `Anonymous` and `Identified`. `Identified` accounts can be seen to have close to a 2:1 split for `Emotional` and `Rational` tweets, however `Anonymous` tweets have a significantly higher ratio close to 5:1. This uneven ratio may suggest that `Anonymous` accounts are more likely to post mis/disinformation tweets `Emotionally`.</p>
@@ -485,7 +485,7 @@ fig = px.imshow(corr,
 		y=corr.columns)
 fig.show()</pre>
 							<figure style="text-align: center;">
-								<embed type="text/html" src="heatmap.html" style="width: 600px; height: 500px;">
+								<embed type="text/html" src="heatmap.html" style="width: 600px; max-width: 100%; height: 500px;">
 								<figcaption style="margin-top: -3em;">Heatmap visualization</figcaption>
 							</figure>
 							<p>Looking at the resulting heat map, we can see that there is little correlation between the numerical features. The numerical features with the greatest correlation are `Following` and `Followers`, which may be due to the fact that the more you follow other users, the more likely that others may follow back, cause the said relation. Aside from that, there are no other strong correlations that can be observed.</p>
@@ -507,7 +507,7 @@ fig = px.line(df_dataset_14day, x='Date posted', y='14 Day Tweet Count', title='
 fig.show()
 </pre>
 							<figure>
-								<embed type="text/html" src="line-14day.html" style="width: 100%; height: 500px;"> 
+								<embed type="text/html" src="line-14day.html" style="width: 100%; height:500px;"> 
 								<figcaption style="margin-top: -3em;">Line plot visualization (14 day binning)</figcaption>
 							</figure>
 							<pre class="code-block">df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
@@ -529,7 +529,7 @@ fig.show()
 							</figure>
 							<p>Looking at our time series data, we can quickly observe that there are (3) major peaks in both the 14 day binning and monthly binning. Most notably, when we compare the monthly binning side-by-side to the number of active cases of COVID-19, we can observe that the spikes happen at around the same time.</p>
 							<figure style="text-align: center;">
-								<img src="2d-output1.png" alt="">
+								<img src="2d-output1.png" alt="" style="max-width: 100%;">
 								<figcaption>Active COVID cases line graph (Philippines)</figcaption>
 							</figure>
 						</div>
