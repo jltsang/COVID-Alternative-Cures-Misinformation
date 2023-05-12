@@ -139,23 +139,23 @@
 						<div class="container" style="text-align:left;">
 							<h3>1.a. Handling missing values</h3>
 							<p>When looking for missing values, we can observe that `Account bio`, `Location`, `Tweet Translated`, `Screenshot`, `Views`, `Rating`, `Remarks`, `Reviewer`, `Review` are all listed.</p>
-							<pre class="code-block"><code>print("Columns with missing/nan values:")
-print("Data set:", df_dataset.columns[df_dataset.isna().any()].tolist())</code></pre>
+							<pre class="code-block">print("Columns with missing/nan values:")
+print("Data set:", df_dataset.columns[df_dataset.isna().any()].tolist())</pre>
 							<p>Some of these columns, including `Tweet Translated`, `Screenshot`, `Views`, `Rating`, `Remarks`, `Reviewer`, and `Review`, are optional columns that we have opted not to fill out during data collection.</p>
 							<p>On the other hand, `Account bio` and `Location` are columns with missing values given that Twitter users may opt to leave these fields blank. Given that there is already a limited amount of data, dropping the samples is not ideal. In addition, `Account bio` and `Location` are not relevant variables for what we want to analyse later on. Therefore, given the irrelevancy of said columns and small number of samples, we instead choose to drop the columns instead of the samples.</p>
-							<pre class="code-block"><code>df_dataset = df_dataset.drop(['Account bio', 'Location', 'Tweet Translated', 'Screenshot', 'Rating', 'Remarks','Reviewer', 'Review', 'Views'], axis=1)</code></pre>
+							<pre class="code-block">df_dataset = df_dataset.drop(['Account bio', 'Location', 'Tweet Translated', 'Screenshot', 'Rating', 'Remarks','Reviewer', 'Review', 'Views'], axis=1)</pre>
 							<p>In addition to columns with missing values, we can also look to drop columns that are completely filled up but are irrelevant to analysis. These include `ID`, `Timestamp`, `Tweet URL`, `Group`, `Collector`, `Category`, `Topic`, `Keywords`, `Account handle`, `Account name`, `Joined`, `Tweet Type`, and `Reasoning`.</p>
-							<pre class="code-block"><code>df_dataset = df_dataset.drop(['ID', 'Timestamp', 'Group', 'Collector', 'Category', 'Topic', 'Keywords', 'Reasoning', 'Tweet URL', 'Account handle', 'Account name', 'Joined', 'Tweet Type'], axis=1)
+							<pre class="code-block">df_dataset = df_dataset.drop(['ID', 'Timestamp', 'Group', 'Collector', 'Category', 'Topic', 'Keywords', 'Reasoning', 'Tweet URL', 'Account handle', 'Account name', 'Joined', 'Tweet Type'], axis=1)
 
-print(df_dataset.shape)</code></pre>
+print(df_dataset.shape)</pre>
 							<p>With that, we are left with a much more compact dataset with only 10 columns, while maintaining a total of 150 samples.</p>
-							<pre class="code-block"><code>df_dataset.head(10).style.set_properties(**{'text-align': 'left'})</code></pre>
+							<pre class="code-block">df_dataset.head(10).style.set_properties(**{'text-align': 'left'})</pre>
 						</div>
 						<div class="container">
 							<h3>1.b. Handling outliers</h3>
 							<p>After handling missing values, we turn our attention into possible outlier values. While we were able to preserve our samples by dropping columns when handling missing values, the same cannot be done for outlier data. These data can heavily affect our analysis and results later on.</p>
 							<p>We begin by looking into our outlier data based on each variable.</p>
-							<pre class="code-block"><code>from sklearn.preprocessing import StandardScaler
+							<pre class="code-block">from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
 # Standardize the features to get z-scores
@@ -210,8 +210,8 @@ ax2.axhline(y=-3, xmin=-0.5, xmax=len(df_scaled_sorted)-0.5, color='red', alpha=
 color_bars(ax2, df_scaled_sorted) # Color the bars
 
 plt.tight_layout()
-plt.show()</code></pre>
-							<pre class="code-block"><code>from sklearn.preprocessing import StandardScaler
+plt.show()</pre>
+							<pre class="code-block">from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
 # Standardize the features to get z-scores
@@ -266,8 +266,8 @@ ax2.axhline(y=-3, xmin=-0.5, xmax=len(df_scaled_sorted)-0.5, color='red', alpha=
 color_bars(ax2, df_scaled_sorted) # Color the bars
 
 plt.tight_layout()
-plt.show()</code></pre>
-							<pre class="code-block"><code>from sklearn.preprocessing import StandardScaler
+plt.show()</pre>
+							<pre class="code-block">from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
 # Standardize the features to get z-scores
@@ -322,8 +322,8 @@ ax2.axhline(y=-3, xmin=-0.5, xmax=len(df_scaled_sorted)-0.5, color='red', alpha=
 color_bars(ax2, df_scaled_sorted) # Color the bars
 
 plt.tight_layout()
-plt.show()</code></pre>
-							<pre class="code-block"><code>from sklearn.preprocessing import StandardScaler
+plt.show()</pre>
+							<pre class="code-block">from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
 # Standardize the features to get z-scores
@@ -378,9 +378,9 @@ ax2.axhline(y=-3, xmin=-0.5, xmax=len(df_scaled_sorted)-0.5, color='red', alpha=
 color_bars(ax2, df_scaled_sorted) # Color the bars
 
 plt.tight_layout()
-plt.show()</code></pre>
+plt.show()</pre>
 							<p>We can observe that outlier data do exists in our dataset. Even more concerning is the fact that these outlier data go as high 10 standard deviations away (std=10). In order to make sure we that these samples would not skew our analysis later, we can only drop them.</p>
-							<pre class="code-block"><code>def remove_outliers(df, feature, threshold):
+							<pre class="code-block">def remove_outliers(df, feature, threshold):
 	df_scaled = df.copy(deep=True)
 	scaler = StandardScaler()
 	df_scaled[[feature]] = scaler.fit_transform(df_scaled[[feature]])
@@ -389,12 +389,12 @@ plt.show()</code></pre>
 
 threshold = 3
 for col in df_dataset.select_dtypes(include='number').columns:
-	df_dataset = remove_outliers(df_dataset, col, threshold)</code></pre>
+	df_dataset = remove_outliers(df_dataset, col, threshold)</pre>
 						</div>
 						<div class="container">
 							<h3>1.c. Ensuring format consistency</h3>
 							<p>In order to ensure the validity and consistency of the data, a quick set of tests are conducted to find incorrectly-formatted data. To accomplish this, we created a mask with the correct format for each column and compared it with the dataset entries. As seen below we can see that the results show no formatting mistakes for all columns.</p>
-							<pre class="code-block"><code>import re
+							<pre class="code-block">import re
 
 print("Checking # of incorrectly-formatted rows...")
 # Check account type
@@ -418,12 +418,12 @@ print(f"For column \"Content type\": {df_dataset[~content_type_mask].shape[0]}")
 whole_number_pattern = re.compile(r'^\d+$')
 for col in ['Following', 'Followers', 'Likes', 'Replies', 'Retweets', 'Quote Tweets']:
 	number_mask = df_dataset[col].astype(str).str.match(whole_number_pattern)
-	print(f"For column \"{col}\": {df_dataset[~number_mask].shape[0]}")</code></pre>
+	print(f"For column \"{col}\": {df_dataset[~number_mask].shape[0]}")</pre>
 						</div>
 						<div class="container">
 							<h3>1.d. Categorical data encoding</h3>
 							<p>Looking at our remaining columns, we can observe that there are two categorical vairables, `Account type` and `Content type`. In order to use the following variable later on, we will need to convert these columns to numerical data. To accomplish this, we perform one-hot encoding on both categories.</p>
-							<pre class="code-block"><code># One-hot encode Account Type column
+							<pre class="code-block"># One-hot encode Account Type column
 account_type_dummies = pd.get_dummies(df_dataset['Account type'], prefix='Account Type')
 df_dataset = pd.concat([df_dataset, account_type_dummies], axis=1)
 
@@ -431,14 +431,14 @@ df_dataset = pd.concat([df_dataset, account_type_dummies], axis=1)
 content_type_dummies = pd.get_dummies(df_dataset['Content type'], prefix='Content Type')
 df_dataset = pd.concat([df_dataset, content_type_dummies], axis=1)
 
-print(df_dataset.columns)</code></pre>
+print(df_dataset.columns)</pre>
 							<p>This will make it easier to perform analysis and modeling with these variables later on, espcially beside other numerical data.</p>
 						</div>
 						<div class="container">
 							<h3>1.e. Natural Language Processing</h3>
 							<p>Now that we have made sure that our data set has no blemishes, we can begin with the processing. We make use of the NLP (Natural Language Processing) module found within Python in order for us to turn our dataset to a more structured and workable set</p>
 							<p>We begin our process by 'cleaning' the dataset and transforming special symbols such as emojis into words, as the usage of emojis may provide extra context to the tweets they are being used in.</p>
-							<pre class="code-block"><code>import pandas as pd
+							<pre class="code-block">import pandas as pd
 import re
 import copy
 import nltk
@@ -469,9 +469,9 @@ texts = [emoji_to_word(t) for t in texts]
 texts = [emote_to_word(t) for t in texts]
 
 df_emoji = pd.DataFrame({'Original': df_dataset['Tweet'], 'Without Emotes': texts})
-df_emoji.style.set_properties(**{'text-align': 'left'})</code></pre>
+df_emoji.style.set_properties(**{'text-align': 'left'})</pre>
 							<p>after converting the emojis, we made use of a new array called `texts` which we used to store the new tweets as we wish to turn all the words into lowercase in order to make the dataset easier to work with. From here we create a dataframe called `df` with column `Original`, showing original tweet and column `Cleaned` showing the tweets which were changed to lowercase</p>
-							<pre class="code-block"><code>import string
+							<pre class="code-block">import string
 
 # convert to lowercase
 texts = [t.lower() for t in texts]
@@ -483,16 +483,16 @@ texts = [t.replace('tuob', 'steam').replace('suob', 'steam') for t in texts]
 texts = [t.translate(str.maketrans('', '', string.punctuation)) for t in texts]
 
 df = pd.DataFrame({'Original': df_dataset['Tweet'], 'Cleaned': texts})
-df.style.set_properties(**{'text-align': 'left'})</code></pre>
+df.style.set_properties(**{'text-align': 'left'})</pre>
 							<p>You may have noticed that we included a line of code that replaced `tuob` or `suob` with `steam`. This was done by us as a sort of bandaid solution as the translator was either ignoring the word entirely or misreading the word as `subo` leading to incorrect translation.</p>
-							<pre class="code-block"><code>%%capture
+							<pre class="code-block">%%capture
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-!pip install googletrans==3.1.0a0</code></pre>
+!pip install googletrans==3.1.0a0</pre>
 							<p>In order to maximize the use of the NLP module, we decided to translate the tweets first from Tagalog to English as the module was not optimized to handle tweets in Tagalog, we stored them into a new dataframe called `df_en` showing the original data with the translated data with columns `Original` and `English` respectively.</p>
-							<pre class="code-block"><code># Removing stopwords might be tedious for multilingual texts
+							<pre class="code-block"># Removing stopwords might be tedious for multilingual texts
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -504,10 +504,10 @@ translator = Translator()
 texts_en = [t.text for t in translator.translate(texts, src='tl', dest='en')]
 
 df_en = pd.DataFrame({'Original': df_dataset['Tweet'], 'English': texts_en})
-df_en.style.set_properties(**{'text-align': 'left'})</code></pre>
+df_en.style.set_properties(**{'text-align': 'left'})</pre>
 							<p>Now that we converted the dataset into English, we could know start with actually structuring the data. First we started by tokenizing the data. Tokenizing is when we conviently split up text word by word. This allowed us to work with smaller pieces of data that were still meaningful even outside of context of the rest of the text. </p>
 							<p>After tokenizing, we also made sure to remove the stopwords in our dataset. Stopwords are pretty much the words we don't really want to care about, so we filter them out of our data frame.</p>
-							<pre class="code-block"><code>texts_tok = []
+							<pre class="code-block">texts_tok = []
 for text in texts_en:
 	# tokenize the text into words
 	words = word_tokenize(text)
@@ -520,11 +520,11 @@ for text in texts_en:
 	texts_tok.append(filtered_sentence)
 
 df_filt = pd.DataFrame({'Original': df_en['English'], 'Tokenized': texts_tok})
-df_filt.style.set_properties(**{'text-align': 'left'})</code></pre>
+df_filt.style.set_properties(**{'text-align': 'left'})</pre>
 							<p>The process of tokenizing and stopwords removal was similar to our earlier methods, as you can see with the use of a new array called `texts_tok`, which we then use to create a new dataframe called `df_filt` using our translated  dataframe `df_en` and our `texts_tok` array.</p>
 							<p>With the dataframe now easier to work with, we simplified it further with Stemming and Lemmatization. Stemming is when you strip a word down to its root word. Kind of like turning a fraction into its simplest form. Lemmatization is like stemming but will give you a complete word that makes sense when you read it instead of a fragment of a word.</p>
 							<p>We accomplished stemming and lemmatization by making use of separate variables called `stemmer` and `lemmatizer` respectively, which was used in the `stem_lem` function for the process of stemming/lemmatization. </p>
-							<pre class="code-block"><code>from nltk.stem import PorterStemmer, WordNetLemmatizer
+							<pre class="code-block">from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 # Initialize the stemmer and lemmatizer
 stemmer = PorterStemmer()
@@ -553,12 +553,12 @@ processed_texts = [stem_lem(t) for t in texts_tok]
 
 
 df_sl = pd.DataFrame({'Original': df_filt['Tokenized'], 'Stemmed': texts_stem, 'Lemmatized': texts_lem})
-df_sl.style.set_properties(**{'text-align': 'left'})</code></pre>
+df_sl.style.set_properties(**{'text-align': 'left'})</pre>
 							<p>The final result from all the processing was the creation of a final dataframe called `df_sl` and this dataframe was used in getting the common `stemmed` and `lemmatized` words that gave us an insight as to which "cure" was most prevalent among the tweets.</p>
-							<pre class="code-block"><code>stemm_freq = df_sl['Stemmed'].explode().value_counts()
-stemm_freq[:30].to_frame().style</code></pre>
-							<pre class="code-block"><code>lemm_freq = df_sl['Lemmatized'].explode().value_counts()
-lemm_freq[:30].to_frame().style</code></pre>
+							<pre class="code-block">stemm_freq = df_sl['Stemmed'].explode().value_counts()
+stemm_freq[:30].to_frame().style</pre>
+							<pre class="code-block">lemm_freq = df_sl['Lemmatized'].explode().value_counts()
+lemm_freq[:30].to_frame().style</pre>
 							<p>From the results, it was concluded that `steam` in this case `tuob` or `suob` was the most talked about "cure" for COVID, followed by `ginger`, `lemon`, `salt` and lastly, `vitamins`.</p>
 						</div>
 						<div class="container">
@@ -572,7 +572,7 @@ lemm_freq[:30].to_frame().style</code></pre>
 						<div class="container">
 							<h3>2.a. Bar Plot</h3>
 							<p>The first thing we are interested in looking into is finding possible connections between `Account Type` and `Content Type`. To answer this question, we create a Grouped Barplot that shows the number of samples for each `Content Type` grouped by `Account Type`.</p>
-							<pre class="code-block"><code># Group the DataFrame by 'Account type' and 'Content type' and count the number of occurrences
+							<pre class="code-block"># Group the DataFrame by 'Account type' and 'Content type' and count the number of occurrences
 df_count = df_dataset.groupby(['Account type', 'Content type'])['Content type'].count().reset_index(name='Count')
 
 # Create a nested bar chart with Plotly
@@ -592,17 +592,17 @@ fig.update_layout(
 )
 
 # Show the chart
-fig.show()</code></pre>
+fig.show()</pre>
 							<p>The resulting graph shows some interesting results. The most obvious result is that `Emotional` tweets far outnumber `Rational`. `Transactional` tweets can also be seen to be very rare, with only one instance present. Additionally, most mis/disinformation comes from `Anonymous` account types, followed by `Identified`, and finally `Media` with one instance.</p>
 							<p>A more notable observation is the distribution and ratio of `Emotional` and `Rational` tweets for `Anonymous` and `Identified`. `Identified` accounts can be seen to have close to a 2:1 split for `Emotional` and `Rational` tweets, however `Anonymous` tweets have a significantly higher ratio close to 5:1. This uneven ratio may suggest that `Anonymous` accounts are more likely to post mis/disinformation tweets `Emotionally`.</p>
 						</div>
 						<div class="container">
 							<h3>2.b. Scatterplots</h3>
 							<p>Next, we want to look into the distribution of numerical features such as `Following`, `Followers`, `Likes`, `Replies`, `Retweets`, `Quote Tweets` among `Account Types` using a Scatter Plot Matrix plot to find possible relationships between them.</p>
-							<pre class="code-block"><code># Define the categorical and numerical features
+							<pre class="code-block"># Define the categorical and numerical features
 feat_cat = ['Account Type_Anonymous', 'Account Type_Identified', 'Account Type_Media', 'Content Type_Emotional', 'Content Type_Rational', 'Content Type_Transactional']
-feat_num = ['Following', 'Followers', 'Likes', 'Replies', 'Retweets', 'Quote Tweets']</code></pre>
-							<pre class="code-block"><code>import matplotlib.pyplot as plt
+feat_num = ['Following', 'Followers', 'Likes', 'Replies', 'Retweets', 'Quote Tweets']</pre>
+							<pre class="code-block">import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Set plot styling
@@ -612,13 +612,13 @@ sns.set_theme(style="darkgrid")
 # Plot the distribution of numerical features
 g = sns.pairplot(data=df_dataset[feat_num+['Account type']], hue='Account type')
 g.fig.suptitle("Twitter Data - Numerical Features", fontsize=18, y=1.05) # y: vertical position of title
-plt.show()</code></pre>
+plt.show()</pre>
 							<p>Looking in the resulting plot, there no standout patterns can be observe. `Anonymous` and `Identified` `Account Types` are scattered randomly. Additionally, `Media` `Account Types` may seem to be missing in the scatter plots due to only having one sample in the entirety of the dataset, as seen in the bar plot.</p>
 						</div>
 						<div class="container">
 							<h3>2.c. Heat Map</h3>
 							<p>We also want to check if there are any correlations between the numerical features. We use a heat map in order to visualize possible correlations between features.</p>
-							<pre class="code-block"><code># Correlation plot (heat map)
+							<pre class="code-block"># Correlation plot (heat map)
 import plotly.express as px
 
 num_features = ['Following','Followers', 'Likes', 'Replies', 'Retweets']
@@ -631,13 +631,13 @@ fig = px.imshow(corr,
 				labels=dict(x='Features', y='Features', color='Correlation'),
 				x=corr.columns,
 				y=corr.columns)
-fig.show()</code></pre>
+fig.show()</pre>
 							<p>Looking at the resulting heat map, we can see that there is little correlation between the numerical features. The numerical features with the greatest correlation are `Following` and `Followers`, which may be due to the fact that the more you follow other users, the more likely that others may follow back, cause the said relation. Aside from that, there are no other strong correlations that can be observed.</p>
 						</div>
 						<div class="container">
 							<h3>2.d. Line Plot (Time-series)</h3>
 							<p>The last thing we want to look into are possible trends are present in mis/disinformation. To do this, we create two line plots, one for 14 day binning and another for monthly binning.</p>
-							<pre class="code-block"><code>df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
+							<pre class="code-block">df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
 df_dataset_14day = df_dataset.groupby(pd.Grouper(key='Date posted', freq='14D',convention='start')).size()
 
 # Convert the pandas series to a DataFrame
@@ -649,8 +649,8 @@ df_dataset_14day = df_dataset_14day.reset_index().rename(columns={'Date posted':
 # Create a line plot using Plotly
 fig = px.line(df_dataset_14day, x='Date posted', y='14 Day Tweet Count', title='14 Day Binning Tweet Count')
 fig.show()
-</code></pre>
-							<pre class="code-block"><code>df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
+</pre>
+							<pre class="code-block">df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
 df_dataset_monthly = df_dataset.groupby(pd.Grouper(key='Date posted', freq='1M',convention='start')).size()
 
 # Convert the pandas series to a DataFrame
@@ -662,7 +662,7 @@ df_dataset_monthly = df_dataset_monthly.reset_index().rename(columns={'Date post
 # Create a line plot using Plotly
 fig = px.line(df_dataset_monthly, x='Date posted', y='Monthly Tweet Count', title='Monthly Binning Tweet Count')
 fig.show()
-</code></pre>
+</pre>
 							<p>Looking at our time series data, we can quickly observe that there are (3) major peaks in both the 14 day binning and monthly binning. Most notably, when we compare the monthly binning side-by-side to the number of active cases of COVID-19, we can observe that the spikes happen at around the same time.</p>
 						</div>
 					</div>
