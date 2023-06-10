@@ -100,7 +100,7 @@ input, select, textarea {
 	body, input, textarea, select {
 		font-family: 'Open Sans', sans-serif;
 		line-height: 1.85em;
-		color: #888;
+		color: #666666;
 		font-weight: 300;
 		font-size: 13pt;
 	}
@@ -2457,13 +2457,26 @@ input, select, textarea {
 		font-size: 14px;
 		white-space: pre;
 	}
+
 	pre {
 		white-space: normal;
 		margin: 2em 0;
 	}
+	
 	figcaption {
 		font-style: italic;
 		font-size: 0.85rem;
 		padding: 2px;
 		text-align: center;
 	}
+	
+	span.emph {
+		font-family: 'Source Code Pro', monospace;
+		font-size: 15px;
+		background: #1d1f21cc;
+		color: #ffffff;
+		text-shadow: none;
+		padding: 3px;
+		border-radius: 3px;
+	}
+	
