@@ -10,7 +10,7 @@
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
 pre, a, abbr, acronym, address, big, cite,
-code, del, dfn, em, img, ins, kbd, q, s, samp,
+del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var, b,
 u, i, center, dl, dt, dd, ol, ul, li, fieldset,
 form, label, legend, table, caption, tbody,
@@ -2444,13 +2444,22 @@ input, select, textarea {
 
 	}
 	@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
-	.code-block {
+	/* .code-block {
 		font-family: 'Source Code Pro', monospace;
 		margin: 2em 0;
 		padding: 10px 20px;
 		color: #292929;
 		background-color: #f2f2f2;
 		overflow: scroll;
+	} */
+	code {
+		text-shadow: none;
+		font-size: 14px;
+		white-space: pre;
+	}
+	pre {
+		white-space: normal;
+		margin: 2em 0;
 	}
 	figcaption {
 		font-style: italic;
