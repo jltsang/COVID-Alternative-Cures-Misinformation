@@ -30,7 +30,7 @@
 			<article id="methods" class="wrapper style2">
 				<div class="container">
 					<header>
-						<h2>Here is how we cleaned the data,</h2>
+						<h2>First, we have to clean the data,</h2>
 					</header>
 					<p>
 						Before we begin exploring the data, preprocessing techniques must first be applied 
@@ -46,7 +46,7 @@
 							</code>
 						</pre>
 						<figure>
-							<img src="1a-output1.png" alt="" srcset="" style="width: 100%">
+							<img src="images/1a-output1.png" alt="" srcset="" style="width: 100%">
 							<figcaption>Codeblock output</figcaption>
 						</figure>
 						<p>Some of these columns, including `Tweet Translated`, `Screenshot`, `Views`, `Rating`, `Remarks`, `Reviewer`, and `Review`, are optional columns that we have opted not to fill out during data collection.</p>
@@ -63,7 +63,7 @@
 							<code class="language-python">df_dataset.head(10).style.set_properties(**{'text-align': 'left'})	</code>
 						</pre>
 						<figure>
-							<img src="1a-output2.png" alt="" srcset="" style="width: 100%">
+							<img src="images/1a-output2.png" alt="" srcset="" style="width: 100%">
 							<figcaption>The first 10 rows of the dataframe</figcaption>
 						</figure>
 					</div>
@@ -132,10 +132,10 @@
 							</code>
 						</pre>
 						<figure>
-							<img src="1b-output1.png" alt="" style="width: 100%">
-							<img src="1b-output2.png" alt="" style="width: 100%">
-							<img src="1b-output3.png" alt="" style="width: 100%">
-							<img src="1b-output4.png" alt="" style="width: 100%">
+							<img src="images/1b-output1.png" alt="" style="width: 100%">
+							<img src="images/1b-output2.png" alt="" style="width: 100%">
+							<img src="images/1b-output3.png" alt="" style="width: 100%">
+							<img src="images/1b-output4.png" alt="" style="width: 100%">
 							<figcaption>Followers, Likes, Replies, and Retweets distributions</figcaption>
 						</figure>
 						<p>We can observe that outlier data do exist in our dataset. Even more concerning is the fact that these outlier data go as high 10 standard deviations away (std=10). In order to make sure we that these samples would not skew our analysis later, we can only drop them.</p>
@@ -183,7 +183,7 @@
 							</code>
 						</pre>
 						<figure style="text-align: center;">
-							<img src="1c-output1.png" alt="" style="max-width: 100%;">
+							<img src="images/1c-output1.png" alt="" style="max-width: 100%;">
 							<figcaption>Output of the codeblock</figcaption>
 						</figure>
 					</div>
@@ -204,7 +204,7 @@
 							</code>
 						</pre>
 						<figure style="text-align: center;">
-							<img src="1d-output1.png" alt=""  style="max-width: 100%;">
+							<img src="images/1d-output1.png" alt=""  style="max-width: 100%;">
 							<figcaption>Columns of the dataframe</figcaption>
 						</figure>
 						<p>This will make it easier to perform analysis and modeling with these variables later on, espcially beside other numerical data.</p>
@@ -332,7 +332,7 @@
 							</code>
 						</pre>
 						<figure>
-							<img src="1e-output1.png" alt="" style="width:100%;">
+							<img src="images/1e-output1.png" alt="" style="width:100%;">
 							<figcaption>First 10 rows of the new dataframes</figcaption>
 						</figure>
 						<p>The final result from all the processing was the creation of a final dataframe called `df_sl` and this dataframe was used in getting the common `stemmed` and `lemmatized` words that gave us an insight as to which "cure" was most prevalent among the tweets.</p>
@@ -343,7 +343,7 @@
 							</code>
 						</pre>
 						<figure style="text-align: center;">
-							<img src="1e-output2.png" alt="">
+							<img src="images/1e-output2.png" alt="">
 							<figcaption>Most common words from the Stemmed dataframe</figcaption>
 						</figure>
 						<pre style="tab-size: 4;">
@@ -353,7 +353,7 @@
 							</code>
 						</pre>
 						<figure style="text-align: center;">
-							<img src="1e-output3.png" alt="">
+							<img src="images/1e-output3.png" alt="">
 							<figcaption>Most common words from the Lemmatized dataframe</figcaption>
 						</figure>
 						<p>From the results, it was concluded that `steam` in this case `tuob` or `suob` was the most talked about "cure" for COVID, followed by `ginger`, `lemon`, `salt` and lastly, `vitamins`.</p>
