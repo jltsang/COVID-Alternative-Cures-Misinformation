@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>PH Twitter Fake News Analysis</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/hybrid.min.css">
+	</head>
+	<body class="is-preload">
+
+		<!-- Nav -->
+			<nav id="nav">
+				<ul class="container">
+					<li><a href="index.html#top">Top</a></li>
+					<li><a href="index.html#overview">Overview</a></li>
+					<li><a href="index.html#data">Data</a></li>
+					<li><a href="index.html#methods">Methods</a></li>
+					<li><a href="index.html#results">Results</a></li>
+					<li><a href="index.html#team">Team</a></li>
+				</ul>
+			</nav>
+		<!-- Data exploration -->
+			<article id="methods" class="wrapper style2">
+				<div class="container">
+					<header>
+						<h2>Machine Learning/Computational Modeling</h2>
+					</header>
+					<p>
+						As our topic focuses on misinformation, the data to be analyzed will be quantititative focused, 
+						making the use of event detection the main tool for our machine learning analysis. 
+					</p>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>1. Visualization of data by week</h3>
+						<p>
+							To have a good idea on how our data is spread out, we decided to plot our dataset week by week. 
+							This allowed us to see how the disinformation regarding our topic behaved over time during the 
+							span of the pandemic.
+						</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								## Plot data by day of week
+								import plotly.graph_objects as go
+								df_dataset_count['weekday'] = df_dataset_count['date'].dt.strftime('%a')
+
+								df_dataset_count['week'] = df_dataset_count['date'].dt.strftime('%Y-W%U')  # Create a 'week' column based on the year and week number
+								weekly_counts = df_dataset_count.groupby(['week', 'weekday'])['count'].sum().reset_index()
+
+								# Sort the weekdays in the correct order
+								weekday_order = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+								weekly_counts['weekday'] = pd.Categorical(weekly_counts['weekday'], categories=weekday_order, ordered=True)
+								weekly_counts = weekly_counts.sort_values(['week', 'weekday'])
+
+								fig = go.Figure()
+
+								for week, data in weekly_counts.groupby('week'):
+									fig.add_trace(go.Scatter(
+									x=data['weekday'],
+									y=data['count'],
+									mode='lines+markers',
+									name=week))
+
+								fig.update_layout(
+									title='Weekly Counts',
+									xaxis={'categoryorder': 'array', 'categoryarray': weekday_order},
+									yaxis_title='Count')
+
+								fig.show()
+							</code>
+						</pre>
+						<p>
+							The graph shows us the distribution of tweets on a given week. We can observe from this graph 
+							that there seems to be more activity early in the week, Monday in particular, over other days. 
+							We can also pinpoint three weeks with the highest activity in a single day, namely the Monday 
+							of ```2021-W17```, Monday of ```2021-W40```, and Wednesday of ```2021-W49```.
+						</p>
+					</div>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>2. Peak Point Detection</h3>
+						<p>
+							We now turn our attention to idenfitying what else could have caused the influx of disinformation tweets. 
+							To accomplish this, we used the peak detection and change point detection models of machine learning.
+						</p>
+						<p>
+							We begin with Peak Detection to identify what dates to search for notable and historical events.
+						</p>
+						<p>
+							In order to perform peak detection, we made use of the scipy module by importing the find_peaks function. 
+							This function allowed us to find all local maxima in a given graph by simple comparison of neighboring values.
+						</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								## Perform peak detection
+								from scipy.signal import find_peaks
+
+								x = df_dataset_14day['date'].astype(int) / 10**9  # Convert to seconds (UNIX epoch start)
+								x = x.values.reshape(-1, 1) 
+								y = df_dataset_14day['count']
+
+								peaks, _ = find_peaks(df_dataset_14day['count'],
+														height=5,  # height of peaks
+														width=1,       # width of peaks
+														threshold=1, # vertical distance to its neighboring samples
+														distance=7,   # minimal horizontal distance (>= 1) in samples between neighbouring peaks
+														prominence=4) # vertical distance between the peak and its lowest contour line
+
+
+								# Extract event timestamps
+								events = df_dataset_14day.iloc[peaks]
+
+								# Plot peaks
+								fig = go.Figure()
+
+								# Original data
+								fig.add_trace(go.Scatter(
+									x=df_dataset_14day.index,
+									y=df_dataset_14day['count'],
+									hovertext=df_dataset_14day['date'].dt.strftime('%Y-%m-%d'),
+									mode='lines',
+									name='Original Data'))
+
+								# Peaks
+								fig.add_trace(go.Scatter(
+									x=events.index,
+									y=events['count'],
+									hovertext=events['date'].dt.strftime('%Y-%m-%d'),
+									mode='markers',
+									name='Peaks',
+									marker=dict(
+									color='red',
+									size=8,
+									symbol='x')))
+
+								# Additional points
+								tuob_endorsement_date = '2020-06-01'
+								salabat_date = '2020-02-07'
+
+								tuob_endorsement_index = df_dataset_14day['date'].sub(pd.Timestamp(tuob_endorsement_date)).abs().idxmin()
+								salabat_index = df_dataset_14day['date'].sub(pd.Timestamp(salabat_date)).abs().idxmin()
+
+								fig.add_trace(go.Scatter(
+									x=[tuob_endorsement_index for x in range(10)],
+									y=[y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_10],
+									mode='lines',
+									name='Tuob Endorsement',
+									hoverinfo='text',
+									hovertext='Tuob Endorsementt&lt;br&gt;%s' % df_dataset_14day.loc[tuob_endorsement_index, 'date'].strftime('%Y-%m-%d'),
+									line=dict(color='green', width=1, dash='dash')
+								))
+
+
+								fig.add_trace(go.Scatter(
+									x=[salabat_index for x in range(10)],
+									y=[y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_10],
+									mode='lines',
+									name='Salabat Endorsement',
+									hoverinfo='text',
+									hovertext='Salabat Endorsementst&lt;br&gt;%s' % df_dataset_14day.loc[salabat_index, 'date'].strftime('%Y-%m-%d'),
+									line=dict(color='blue', width=1, dash='dash')
+								))
+
+								fig.update_layout(height=600,
+													title='Twitter COVID Misinformation Peak Events',
+													xaxis_title='Time',
+													yaxis_title='Number of Tweets')
+
+								xtv = np.arange(0,len(df_dataset_14day),10)
+								xtt = df_dataset_14day['date'].dt.strftime('%Y-%m-%d')[xtv]
+								fig.update_xaxes(tickmode='array',
+													tickvals=xtv,
+													ticktext=xtt)
+
+								fig.show()
+							</code>
+						</pre>
+						<p>
+							Through peak detection, we identified 4 notable local maxima of peaks in our graph throughout 2020 
+							until 2022, with the tweet count hitting a global maximum during around April 2021. Upon further 
+							research on the peak dates and events occuring around those times, we found that some of the peaks 
+							coincide closely with spikes in total active COVID-19 cases in the Philippines. Here is the 
+							comparision between the dataset peaks and COVID-19 active cases peaks.
+						</p>
+						<p>
+							Reference for covid cases: https://doh.gov.ph/covid19tracker
+						</p>
+						<p><b>Dataset Peaks | COVID-19 Peaks</b></p>
+						<ul>
+							<li>4/13/21 | 4/14/21 (Very Close)</li>
+							<li>8/17/21 | 9/2/21 (Close)</li>
+							<li>1/18/21 | 1/12/21 (Very Close)</li>
+							<li>11/22/22 | 8/10/22 (Far)</li>
+						</ul>
+						<p>
+							Two out of the four peaks are within a week's distance, and another one is within a month's distance. 
+							Only the most recent peak, which is also the smallest peak, is significantly off with a distance of 
+							around 3 months.
+						</p>
+					</div>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>3. Change Point Detection</h3>
+						<p>
+							To have a good idea on how our data is spread out, we decided to plot our dataset week by week. 
+							This allowed us to see how the disinformation regarding our topic behaved over time during the 
+							span of the pandemic.
+						</p>
+						<p>
+							Following this, our group made use of the ruptures module in order to perform Change Point Detection 
+							in order to identify the points in the dataset where trends in our graph start or finish.
+						</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								import ruptures as rpt
+								import plotly.graph_objects as go
+								import numpy as np
+
+								data = df_dataset_14day['count'].values
+
+								# Change-point detection via Pelt algorithm
+								model = "rbf"
+								algo = rpt.Pelt(model=model).fit(data)
+								result = algo.predict(pen=.9)  # Adjust the penalty value based on your data
+
+								fig = go.Figure()
+
+								# Original data
+								fig.add_trace(go.Scatter(
+									x=df_dataset_14day.index,
+									y=df_dataset_14day['count'],
+									hovertext=df_dataset_14day['date'].dt.strftime('%Y-%m-%d'),
+									mode='lines',
+									name='Original Data'))
+
+								# Change points
+								for cp_index in result[:-1]:
+									x_1 = df_dataset_14day.index[cp_index]
+									y_1, y_2, y_3, y_4, y_5 = -2, 1, 4, 7, 10
+									y_6, y_7, y_8, y_9, y_10 = 13, 16, 19, 22, 25
+
+									fig.add_trace(go.Scatter(
+									x=[x_1, x_1, x_1, x_1, x_1, x_1, x_1, x_1, x_1, x_1],
+									y=[y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_10],
+									mode='lines',
+									name=df_dataset_14day['date'].dt.strftime('%Y-%m-%d')[cp_index],
+									hoverinfo='text',
+									hovertext='Change att&lt;br&gt;%s' % df_dataset_14day['date'].dt.strftime('%Y-%m-%d')[cp_index],
+									line=dict(color='red', width=1, dash='dash')))
+
+								# Additional points
+								tuob_endorsement_date = '2020-06-01'
+								salabat_date = '2020-02-07'
+
+								tuob_endorsement_index = df_dataset_14day['date'].sub(pd.Timestamp(tuob_endorsement_date)).abs().idxmin()
+								salabat_index = df_dataset_14day['date'].sub(pd.Timestamp(salabat_date)).abs().idxmin()
+
+								fig.add_trace(go.Scatter(
+									x=[tuob_endorsement_index for x in range(10)],
+									y=[y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_10],
+									mode='lines',
+									name='Tuob Endorsement',
+									hoverinfo='text',
+									hovertext='Tuob Endorsementt&lt;br&gt;%s' % df_dataset_14day.loc[tuob_endorsement_index, 'date'].strftime('%Y-%m-%d'),
+									line=dict(color='green', width=1, dash='dash')
+								))
+
+
+								fig.add_trace(go.Scatter(
+									x=[salabat_index for x in range(10)],
+									y=[y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_10],
+									mode='lines',
+									name='Salabat Endorsement',
+									hoverinfo='text',
+									hovertext='Salabat Endorsementst&lt;br&gt;%s' % df_dataset_14day.loc[salabat_index, 'date'].strftime('%Y-%m-%d'),
+									line=dict(color='blue', width=1, dash='dash')
+								))
+
+								fig.update_layout(height=600,
+													title='Twitter COVID Misinformation Change Points',
+													xaxis_title='Time',
+													yaxis_title='Number of Tweets')
+
+								xtv = np.arange(0, len(df_dataset_14day), 10)
+								xtt = df_dataset_14day['date'].dt.strftime('%Y-%m-%d')[xtv]
+								fig.update_xaxes(tickmode='array',
+													tickvals=xtv,
+													ticktext=xtt)
+
+								fig.show()
+							</code>
+						</pre>
+						<p>
+							Using the penalty value of 0.9, we were able to find a total of 6 change points in our dataset.
+						</p>
+						<p>
+							With 4 change points coinciding with upticks of Covid cases in the country:
+						</p>
+						<ul>
+							<li>March 2, 2021</li>
+							<li>July 20, 2021</li>
+							<li>September 28, 2021</li>
+							<li>September 13, 2022</li>
+						</ul>
+						<p>
+							With the remaining 2 change points coinciding with Covid cases either plateauing or falling off:
+						</p>
+						<ul>
+							<li>May 11, 2021</li>
+							<li>April 26, 2022</li>
+						</ul>
+					</div>
+					<footer>
+						<a href="index.html#methods" class="button large scrolly">Back to home page</a>
+					</footer>
+				</div>
+					<footer>
+						<ul id="copyright">
+							<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+				</div>
+			</article>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/formatting.js"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+			<script>
+				hljs.highlightAll();
+			</script>
+	</body>
+</html>

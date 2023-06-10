@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>PH Twitter Fake News Analysis</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/hybrid.min.css">
+	</head>
+	<body class="is-preload">
+
+		<!-- Nav -->
+			<nav id="nav">
+				<ul class="container">
+					<li><a href="index.html#top">Top</a></li>
+					<li><a href="index.html#overview">Overview</a></li>
+					<li><a href="index.html#data">Data</a></li>
+					<li><a href="index.html#methods">Methods</a></li>
+					<li><a href="index.html#results">Results</a></li>
+					<li><a href="index.html#team">Team</a></li>
+				</ul>
+			</nav>
+		<!-- Data exploration -->
+			<article id="methods" class="wrapper style2">
+				<div class="container">
+					<header>
+						<h2>Now we can explore our data by visualizing its features,</h2>
+					</header>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>1. Bar Plot</h3>
+						<p>The first thing we are interested in looking into is finding possible connections between `Account Type` and `Content Type`. To answer this question, we create a Grouped Barplot that shows the number of samples for each `Content Type` grouped by `Account Type`.</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								# Group the DataFrame by 'Account type' and 'Content type' and count the number of occurrences
+								df_count = df_dataset.groupby(['Account type', 'Content type'])['Content type'].count().reset_index(name='Count')
+
+								# Create a nested bar chart with Plotly
+								fig = px.bar(df_count, x="Account type", y="Count", color="Content type", barmode="group")
+
+								# Customize the layout of the chart
+								fig.update_layout(
+									title="Number of Samples per Content Type by Account Type",
+									xaxis_title="Account Type",
+									yaxis_title="Count",
+									legend_title="Content Type",
+									font=dict(
+										family="Arial",
+										size=14,
+										color="#333333"
+									)
+								)
+
+								# Show the chart
+								fig.show()
+							</code>
+						</pre>
+						<figure>
+							<embed type="text/html" src="bar.html" style="width: 90%; height: 500px;"> 
+							<figcaption style="margin-top: -30px;">Bar graph visualization</figcaption>
+						</figure>
+						<p>
+							The resulting graph shows some interesting results. The most obvious result 
+							is that `Emotional` tweets far outnumber `Rational`. `Transactional` tweets 
+							can also be seen to be very rare, with only one instance present. 
+							Additionally, most mis/disinformation comes from `Anonymous` account 
+							types, followed by `Identified`, and finally `Media` with one instance.
+						</p>
+						<p>
+							A more notable observation is the distribution and ratio of `Emotional` and 
+							`Rational` tweets for `Anonymous` and `Identified`. `Identified` accounts 
+							can be seen to have close to a 2:1 split for `Emotional` and `Rational` 
+							tweets, however `Anonymous` tweets have a significantly higher ratio close 
+							to 5:1. This uneven ratio may suggest that `Anonymous` accounts are more 
+							likely to post mis/disinformation tweets `Emotionally`.
+						</p>
+					</div>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>2. Scatterplots</h3>
+						<p>Next, we want to look into the distribution of numerical features such as 
+							`Following`, `Followers`, `Likes`, `Replies`, `Retweets`, `Quote Tweets` 
+							among `Account Types` using a Scatter Plot Matrix plot to find possible 
+							relationships between them.
+						</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								# Define the categorical and numerical features
+								feat_cat = ['Account Type_Anonymous', 'Account Type_Identified', 'Account Type_Media', 'Content Type_Emotional', 'Content Type_Rational', 'Content Type_Transactional']
+								feat_num = ['Following', 'Followers', 'Likes', 'Replies', 'Retweets', 'Quote Tweets']
+							</code>
+						</pre>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								import matplotlib.pyplot as plt
+								import seaborn as sns
+
+								# Set plot styling
+								sns.set(rc={'figure.figsize':(16,9)})
+								sns.set_theme(style="darkgrid")
+
+								# Plot the distribution of numerical features
+								g = sns.pairplot(data=df_dataset[feat_num+['Account type']], hue='Account type')
+								g.fig.suptitle("Twitter Data - Numerical Features", fontsize=18, y=1.05) # y: vertical position of title
+								plt.show()
+							</code>
+						</pre>
+						<figure>
+							<img src="2b-output1.png" alt="" style="width: 100%;">
+							<figcaption>Scatterplot visualization</figcaption>
+						</figure>
+						<p>Looking in the resulting plot, there no standout patterns can be observe. 
+							`Anonymous` and `Identified` `Account Types` are scattered randomly. 
+							Additionally, `Media` `Account Types` may seem to be missing in the scatter 
+							plots due to only having one sample in the entirety of the dataset, as seen 
+							in the bar plot.
+						</p>
+					</div>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>3. Heat Map</h3>
+						<p>
+							We also want to check if there are any correlations between the numerical 
+							features. We use a heat map in order to visualize possible correlations 
+							between features.
+						</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								# Correlation plot (heat map)
+								import plotly.express as px
+
+								num_features = ['Following','Followers', 'Likes', 'Replies', 'Retweets']
+								corr = df_dataset[num_features].corr() # Use Spearman for non-linear corr: (method='spearman')
+
+								fig = px.imshow(corr,
+										color_continuous_scale='RdBu',
+										zmin=-1,
+										zmax=1,
+										labels=dict(x='Features', y='Features', color='Correlation'),
+										x=corr.columns,
+										y=corr.columns)
+								fig.show()
+							</code>
+						</pre>
+						<figure style="text-align: center;">
+							<embed type="text/html" src="heatmap.html" style="width: 600px; max-width: 100%; height: 500px;">
+							<figcaption style="margin-top: -3em;">Heatmap visualization</figcaption>
+						</figure>
+						<p>
+							Looking at the resulting heat map, we can see that there is little correlation 
+							between the numerical features. The numerical features with the greatest correlation 
+							are `Following` and `Followers`, which may be due to the fact that the more you follow 
+							other users, the more likely that others may follow back, cause the said relation. 
+							Aside from that, there are no other strong correlations that can be observed.
+						</p>
+					</div>
+					<div class="container" style="text-align:left; margin-left: 40px;">
+						<h3>4. Line Plot (Time-series)</h3>
+						<p>
+							The last thing we want to look into are possible trends are present in 
+							mis/disinformation. To do this, we create two line plots, one for 14 day binning 
+							and another for monthly binning.
+						</p>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
+								df_dataset_14day = df_dataset.groupby(pd.Grouper(key='Date posted', freq='14D',convention='start')).size()
+
+								# Convert the pandas series to a DataFrame
+								df_dataset_14day = df_dataset_14day.to_frame(name='14 Day Tweet Count')
+
+								# Reset the index and rename the column to 'Date posted'
+								df_dataset_14day = df_dataset_14day.reset_index().rename(columns={'Date posted': 'Date posted', 0: '14 Day Tweet Count'})
+
+								# Create a line plot using Plotly
+								fig = px.line(df_dataset_14day, x='Date posted', y='14 Day Tweet Count', title='14 Day Binning Tweet Count')
+								fig.show()
+							</code>
+						</pre>
+						<figure>
+							<embed type="text/html" src="line-14day.html" style="width: 100%; height:500px;"> 
+							<figcaption style="margin-top: -3em;">Line plot visualization (14 day binning)</figcaption>
+						</figure>
+						<pre style="tab-size: 4;">
+							<code class="language-python">
+								df_dataset['Date posted'] = pd.to_datetime(df_dataset['Date posted'])
+								df_dataset_monthly = df_dataset.groupby(pd.Grouper(key='Date posted', freq='1M',convention='start')).size()
+
+								# Convert the pandas series to a DataFrame
+								df_dataset_monthly = df_dataset_monthly.to_frame(name='Monthly Tweet Count')
+
+								# Reset the index and rename the column to 'Date posted'
+								df_dataset_monthly = df_dataset_monthly.reset_index().rename(columns={'Date posted': 'Date posted', 0: 'Monthly Tweet Count'})
+
+								# Create a line plot using Plotly
+								fig = px.line(df_dataset_monthly, x='Date posted', y='Monthly Tweet Count', title='Monthly Binning Tweet Count')
+								fig.show()
+							</code>
+						</pre>
+						<figure>
+							<embed type="text/html" src="line-1month.html" style="width: 100%; height: 500px;"> 
+							<figcaption style="margin-top: -3em;">Line plot visualization (Monthly binning)</figcaption>
+						</figure>
+						<p>
+							Looking at our time series data, we can quickly observe that there are (3) major peaks 
+							in both the 14 day binning and monthly binning. Most notably, when we compare the 
+							monthly binning side-by-side to the number of active cases of COVID-19, we can observe 
+							that the spikes happen at around the same time.
+						</p>
+						<figure style="text-align: center;">
+							<img src="2d-output1.png" alt="" style="max-width: 100%;">
+							<figcaption>Active COVID cases line graph (Philippines)</figcaption>
+						</figure>
+					</div>
+					<footer>
+						<a href="index.html#data" class="button large scrolly">Back to home page</a>
+					</footer>
+				</div>
+			</article>
+					<footer>
+						<ul id="copyright">
+							<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+				</div>
+			</article>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/formatting.js"></script>
+			<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+			<script>
+				hljs.highlightAll();
+			</script>
+	</body>
+</html>

@@ -2480,3 +2480,12 @@ input, select, textarea {
 		border-radius: 3px;
 	}
 	
+	.row-box .wide-img > img {
+		object-fit: cover;
+		aspect-ratio: 4 / 3;
+	}
+
+	.row-box .normal-img > img {
+		object-fit: contain;
+		aspect-ratio: 3 / 2;
+	}
