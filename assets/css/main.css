@@ -2473,8 +2473,8 @@ input, select, textarea {
 	span.emph {
 		font-family: 'Source Code Pro', monospace;
 		font-size: 15px;
-		background: #1d1f21cc;
-		color: #ffffff;
+		background: #dadada83;
+		color: #555555;
 		text-shadow: none;
 		padding: 3px;
 		border-radius: 3px;
