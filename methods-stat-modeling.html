@@ -124,12 +124,12 @@
 								print("\nModel Evaluation")
 								print("Linear Regression: RMSE=%.2f, R2=%.2f" % (linear_rmse, linear_r2))
 								for i, p_value in enumerate(p_values.index):
-								print(f'P({p_value}): {p_values[i]}')
+									print(f'P({p_value}): {p_values[i]}')
 
 								if any(p_values <= 0.05):
-								print("There is a significant relationship between the predictor and the response\n")
+									print("There is a significant relationship between the predictor and the response\n")
 								else:
-								print("There is no significant relationship between the predictor and the response\n")
+									print("There is no significant relationship between the predictor and the response\n")
 
 								#--------------------------------------------------------------
 								# Linear Regression Model - After Edorsement
@@ -154,12 +154,12 @@
 								print("\nModel Evaluation")
 								print("Linear Regression: RMSE=%.2f, R2=%.2f" % (linear_rmse, linear_r2))
 								for i, p_value in enumerate(p_values.index):
-								print(f'P({p_value}): {p_values[i]}')
+									print(f'P({p_value}): {p_values[i]}')
 
 								if any(p_values <= 0.05):
-								print("There is a significant relationship between the predictor and the response\n")
+									print("There is a significant relationship between the predictor and the response\n")
 								else:
-								print("There is no significant relationship between the predictor and the response\n")
+									print("There is no significant relationship between the predictor and the response\n")
 
 								# Plot the models
 								import plotly.graph_objects as go
@@ -226,7 +226,6 @@
 
 								# Perform t-test between the slopes
 								t_statistic, p_value = ttest_ind(slope_before, slope_after, equal_var=False)
-								# t_statistic, p_value = ttest_rel(slope_before, slope_after)
 
 								print("slope_before:", slope_before)
 								print("slope_after", slope_after)
@@ -408,7 +407,6 @@
 
 								# Perform t-test between the slopes
 								t_statistic, p_value = ttest_ind(slope_before, slope_after, equal_var=False)
-								# t_statistic, p_value = ttest_rel(slope_before, slope_after)
 
 								print("slope_before:", slope_before)
 								print("slope_after", slope_after)

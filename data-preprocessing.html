@@ -227,7 +227,7 @@
 
 							def emoji_to_word(text):
 								for emot in df_emoji:
-								text = re.sub(r'('+emot+')', "_".join(df_emoji[emot].replace(",","").replace(":","").split()), text)
+									text = re.sub(r'('+emot+')', "_".join(df_emoji[emot].replace(",","").replace(":","").split()), text)
 								return text
 
 							# Handle Emoticons [2]
