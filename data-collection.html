@@ -15,205 +15,203 @@
 	<body class="is-preload">
 
 		<!-- Nav -->
-			<nav id="nav">
-				<ul class="container">
-					<li><a href="index.html#top">Top</a></li>
-					<li><a href="index.html#overview">Overview</a></li>
-					<li><a href="index.html#data">Data</a></li>
-					<li><a href="index.html#methods">Methods</a></li>
-					<li><a href="index.html#results">Results</a></li>
-					<li><a href="index.html#team">Team</a></li>
-				</ul>
-			</nav>
+		<nav id="nav">
+			<ul class="container">
+				<li><a href="index.html#top">Top</a></li>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#data">Data</a></li>
+				<li><a href="index.html#methods">Methods</a></li>
+				<li><a href="index.html#results">Results</a></li>
+				<li><a href="index.html#team">Team</a></li>
+			</ul>
+		</nav>
 
 		<!-- Data exploration -->
-			<article class="wrapper style2">
-				<div class="container">
-					<header>
-						<h2>Here is how we collected the data,</h2>
-					</header>
-					<div class="container" id="scraping" style="text-align:left; margin-left: 40px;">
-						<h3>1. Scraping</h3>
-						<p>
-							The tweets are scraped using an open source Python package called 
-							<a href="https://github.com/JustAnotherArchivist/snscrape">snscrape</a>.
-							For the query, keywords combined with "covid" is set. With language set 
-							to Tagalog and restricted to tweets posted between years 2016 and 2022.
-						</p>
-						<pre style="tab-size: 4;">
-							<code class="language-python">
-								import snscrape.modules.twitter as sntwitter
-								import pandas as pd
-								import datetime as dt
-								import pytz
+		<article class="wrapper style2">
+			<div class="container">
+				<header>
+					<h2>Here is how we collected the data,</h2>
+				</header>
+				<div class="container" id="scraping" style="text-align:left; margin-left: 40px;">
+					<h3>1. Scraping</h3>
+					<p>
+						The tweets are scraped using an open source Python package called 
+						<a href="https://github.com/JustAnotherArchivist/snscrape">snscrape</a>.
+						For the query, keywords combined with "covid" is set. With language set 
+						to Tagalog and restricted to tweets posted between years 2016 and 2022.
+					</p>
+					<pre style="tab-size: 4;">
+						<code class="language-python">
+							import snscrape.modules.twitter as sntwitter
+							import pandas as pd
+							import datetime as dt
+							import pytz
 
 
-								query = "((suob OR tuob OR steam OR luya OR salabat OR asin OR malunggay OR bawang OR aspirin OR garlic OR kamias) AND covid) lang:tl until:2022-12-31 since:2016-01-01"
-								tweets = []
-								limit = 750
+							query = "((suob OR tuob OR steam OR luya OR salabat OR asin OR malunggay OR bawang OR aspirin OR garlic OR kamias) AND covid) lang:tl until:2022-12-31 since:2016-01-01"
+							tweets = []
+							limit = 750
 
-								for tweet in sntwitter.TwitterSearchScraper(query).get_items():
-									if len(tweets) == limit:
-										break
-									else:
-										# Get Tweet Type
-										tweet_type = []
-										if tweet.rawContent:
-											tweet_type.append("Text")
-										if tweet.media:
-											for media in tweet.media:
-												if isinstance(media, sntwitter.Photo) or isinstance(media, sntwitter.Gif):
-													tweet_type.append("Image")
-												elif isinstance(media, sntwitter.Video):
-													tweet_type.append("Video")
-										if tweet.links:
-											tweet_type.append("URL")
-										if tweet.inReplyToTweetId or tweet.quotedTweet:
-											tweet_type.append("Reply")
+							for tweet in sntwitter.TwitterSearchScraper(query).get_items():
+								if len(tweets) == limit:
+									break
+								else:
+									# Get Tweet Type
+									tweet_type = []
+									if tweet.rawContent:
+										tweet_type.append("Text")
+									if tweet.media:
+										for media in tweet.media:
+											if isinstance(media, sntwitter.Photo) or isinstance(media, sntwitter.Gif):
+												tweet_type.append("Image")
+											elif isinstance(media, sntwitter.Video):
+												tweet_type.append("Video")
+									if tweet.links:
+										tweet_type.append("URL")
+									if tweet.inReplyToTweetId or tweet.quotedTweet:
+										tweet_type.append("Reply")
 
-										# Remove duplicates
-										tweet_type = list(dict.fromkeys(tweet_type))
-											
-										tweets.append(
-											[
-												"*CHANGE*",
-												"",
-												tweet.url,
-												"44",
-												"*CHANGE*",
-												"HLTH",
-												"Tuob and herbal medicines can cure COVID-19",
-												"((suob OR tuob OR steam OR luya OR salabat OR asin OR malunggay OR bawang OR aspirin OR garlic OR kamias) AND covid) lang:tl until:2022-12-31 since:2016-01-01",
-												f"@{tweet.user.username}",
-												tweet.user.displayname,
-												tweet.user.rawDescription,
-												"Anonymous",
-												tweet.user.created.astimezone(pytz.timezone('Asia/Manila')).strftime('%m/%y'),
-												tweet.user.friendsCount,
-												tweet.user.followersCount,
-												tweet.user.location,
-												tweet.rawContent,
-												"",
-												", ".join(tweet_type),
-												tweet.date.astimezone(pytz.timezone('Asia/Manila')).strftime('%d/%m/%y %H:%M'),
-												"",
-												"*CHANGE*",
-												tweet.likeCount,
-												tweet.replyCount,
-												tweet.retweetCount,
-												tweet.quoteCount,
-												tweet.viewCount,
-												"",
-												"*CHANGE*",
-												""
-											]
-										)
-								df = pd.DataFrame(
-									tweets,
-									columns=[
-										"ID",
-										"Timestamp",
-										"Tweet URL",
-										"Group",
-										"Collector",
-										"Category",
-										"Topic",
-										"Keywords",
-										"Account handle",
-										"Account name",
-										"Account bio",
-										"Account type",
-										"Joined",
-										"Following",
-										"Followers",
-										"Location",
-										"Tweet",
-										"Tweet Translated",
-										"Tweet Type",
-										"Date posted",
-										"Screenshot",
-										"Content type",
-										"Likes",
-										"Replies",
-										"Retweets",
-										"Quote Tweets",
-										"Views",
-										"Rating",
-										"Reasoning",
-										"Remarks",
-									],
-								)
-								# print(df)
-								df.to_csv("tweets.csv")
-							</code>
-						</pre>
-					</div>
-					<div class="container" id="scraping" style="text-align:left; margin-left: 40px;">
-						<h3>2. Verifying and classifying</h3>
-						<p>
-							After collection, the tweets are then manually checked whether it is misinformation or not.
-							Tweets not considered as misinformation are removed. The tweets are also classified
-							based on the following criteria:
-						</p>
-						<p style="margin-bottom: 0;">
-							Account type (note, you may only label tweets with one account type):
-						</p>
-						<ul>
-							<li>Identified: accounts that have real names, bio and/or are verified</li>
-							<ul style="margin-bottom: 0;">
-								<li>E.g.: known social media personality, celebrity, blogger, personal accounts</li>
-							</ul>
-							<li>Anonymous: accounts that have pseudonyms, aliases, or untraceable names/bio</li>
-							<ul style="margin-bottom: 0;">
-								<li>E.g.: anonymous, alt, spoof, troll accounts</li>
-							</ul>
-							<li>Media: accounts by news outlets/personalities</li>
-							<ul style="margin-bottom: 0;">
-								<li>E.g.: mainstream/alternative media, organizations, journalists</li>
-							</ul>
-						</ul>
-						<p style="margin-bottom: 0;">
-							Content type (note, you may tag a tweet with multiple content types):
-						</p>
-						<ul>
-							<li>Rational: informational, functional, educational, or current event</li>
-							<ul style="margin-bottom: 0;">
-								<li>E.g.: "Speaking of gold, the PH has the 2nd largest gold deposit."</li>
-							</ul>
-							<li>Emotional: interactional, experiential, personal, community, relationship, cause-related</li>
-							<ul style="margin-bottom: 0;">
-								<li>E.g.: "I can sleep at night knowing that PH has the 2nd largest gold deposit."</li>
-							</ul>
-							<li>Transactional: product/service ads, branding, sales promotion, monetary</li>
-							<ul style="margin-bottom: 0;">
-								<li>E.g.: "Check out this gold necklace #PHgolddeposit #Worldbest {link to ads}"</li>
-							</ul>
-						</ul>
-					</div>
-					<footer>
-						<a href="./index.html#data" class="button large scrolly">Back to home page</a>
-					</footer>
+									# Remove duplicates
+									tweet_type = list(dict.fromkeys(tweet_type))
+										
+									tweets.append(
+										[
+											"*CHANGE*",
+											"",
+											tweet.url,
+											"44",
+											"*CHANGE*",
+											"HLTH",
+											"Tuob and herbal medicines can cure COVID-19",
+											"((suob OR tuob OR steam OR luya OR salabat OR asin OR malunggay OR bawang OR aspirin OR garlic OR kamias) AND covid) lang:tl until:2022-12-31 since:2016-01-01",
+											f"@{tweet.user.username}",
+											tweet.user.displayname,
+											tweet.user.rawDescription,
+											"Anonymous",
+											tweet.user.created.astimezone(pytz.timezone('Asia/Manila')).strftime('%m/%y'),
+											tweet.user.friendsCount,
+											tweet.user.followersCount,
+											tweet.user.location,
+											tweet.rawContent,
+											"",
+											", ".join(tweet_type),
+											tweet.date.astimezone(pytz.timezone('Asia/Manila')).strftime('%d/%m/%y %H:%M'),
+											"",
+											"*CHANGE*",
+											tweet.likeCount,
+											tweet.replyCount,
+											tweet.retweetCount,
+											tweet.quoteCount,
+											tweet.viewCount,
+											"",
+											"*CHANGE*",
+											""
+										]
+									)
+							df = pd.DataFrame(
+								tweets,
+								columns=[
+									"ID",
+									"Timestamp",
+									"Tweet URL",
+									"Group",
+									"Collector",
+									"Category",
+									"Topic",
+									"Keywords",
+									"Account handle",
+									"Account name",
+									"Account bio",
+									"Account type",
+									"Joined",
+									"Following",
+									"Followers",
+									"Location",
+									"Tweet",
+									"Tweet Translated",
+									"Tweet Type",
+									"Date posted",
+									"Screenshot",
+									"Content type",
+									"Likes",
+									"Replies",
+									"Retweets",
+									"Quote Tweets",
+									"Views",
+									"Rating",
+									"Reasoning",
+									"Remarks",
+								],
+							)
+							# print(df)
+							df.to_csv("tweets.csv")
+						</code>
+					</pre>
 				</div>
-			</article>
-					<footer>
-						<ul id="copyright">
-							<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				<div class="container" id="scraping" style="text-align:left; margin-left: 40px;">
+					<h3>2. Verifying and classifying</h3>
+					<p>
+						After collection, the tweets are then manually checked whether it is misinformation or not.
+						Tweets not considered as misinformation are removed. The tweets are also classified
+						based on the following criteria:
+					</p>
+					<p style="margin-bottom: 0;">
+						Account type (note, you may only label tweets with one account type):
+					</p>
+					<ul>
+						<li>Identified: accounts that have real names, bio and/or are verified</li>
+						<ul style="margin-bottom: 0;">
+							<li>E.g.: known social media personality, celebrity, blogger, personal accounts</li>
 						</ul>
-					</footer>
+						<li>Anonymous: accounts that have pseudonyms, aliases, or untraceable names/bio</li>
+						<ul style="margin-bottom: 0;">
+							<li>E.g.: anonymous, alt, spoof, troll accounts</li>
+						</ul>
+						<li>Media: accounts by news outlets/personalities</li>
+						<ul style="margin-bottom: 0;">
+							<li>E.g.: mainstream/alternative media, organizations, journalists</li>
+						</ul>
+					</ul>
+					<p style="margin-bottom: 0;">
+						Content type (note, you may tag a tweet with multiple content types):
+					</p>
+					<ul>
+						<li>Rational: informational, functional, educational, or current event</li>
+						<ul style="margin-bottom: 0;">
+							<li>E.g.: "Speaking of gold, the PH has the 2nd largest gold deposit."</li>
+						</ul>
+						<li>Emotional: interactional, experiential, personal, community, relationship, cause-related</li>
+						<ul style="margin-bottom: 0;">
+							<li>E.g.: "I can sleep at night knowing that PH has the 2nd largest gold deposit."</li>
+						</ul>
+						<li>Transactional: product/service ads, branding, sales promotion, monetary</li>
+						<ul style="margin-bottom: 0;">
+							<li>E.g.: "Check out this gold necklace #PHgolddeposit #Worldbest {link to ads}"</li>
+						</ul>
+					</ul>
 				</div>
-			</article>
+				<footer>
+					<a href="./index.html#data" class="button large scrolly">Back to home page</a>
+				</footer>
+			</div>
+			<footer>
+				<ul id="copyright">
+					<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</footer>
+		</article>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script src="assets/js/formatting.js"></script>
-			<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-			<script>
-				hljs.highlightAll();
-			</script>
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<script src="assets/js/formatting.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+		<script>
+			hljs.highlightAll();
+		</script>
 	</body>
 </html>
