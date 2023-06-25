@@ -2510,8 +2510,8 @@ input, select, textarea {
 		background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 	}
 
-	/* Modal Content (Image) */
-	.modal-content {
+	/* Modal Image */
+	.modal-image {
 		margin: auto;
 		display: block;
 		width: 1000px;
@@ -2520,7 +2520,7 @@ input, select, textarea {
 
 	/* 100% Image Width on Smaller Screens */
 	@media only screen and (max-width: 700px){
-		.modal-content {
+		.modal-image {
 			width: 100%;
 		}
 	}
@@ -2552,7 +2552,7 @@ input, select, textarea {
 	}
 
 	/* Add Animation - Zoom in the Modal */
-	.modal-content, .modal-caption {
+	.modal-image, .modal-caption {
 		animation-name: zoom;
 		animation-duration: 0.6s;
 	}
@@ -2601,4 +2601,13 @@ input, select, textarea {
 	#results-modal-img {
 		width: 1400px;
 		max-width: 90%;
+	}
+
+	.zoomable {
+		cursor: zoom-in;
+	}
+
+	.zoomed {
+		transform: scale(2);
+		cursor: zoom-out;
 	}
