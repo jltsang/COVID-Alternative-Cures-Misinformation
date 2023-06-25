@@ -2498,6 +2498,7 @@ input, select, textarea {
 	/* The Modal (background) */
 	.modal {
 		display: none; /* Hidden by default */
+		flex-direction: column;
 		position: fixed; /* Stay in place */
 		z-index: 1; /* Sit on top */
 		padding-top: 100px; /* Location of the box */
@@ -2512,10 +2513,14 @@ input, select, textarea {
 
 	/* Modal Image */
 	.modal-image {
-		margin: auto;
 		display: block;
-		width: 1000px;
+		margin: auto;
+		object-fit: contain;
+		height : auto;
+		width: 1200px;
 		max-width: 90%;
+		max-height: 150%;
+		flex-grow: 1;
 	}
 
 	/* 100% Image Width on Smaller Screens */
@@ -2529,8 +2534,6 @@ input, select, textarea {
 	.modal-trigger {
 		width: 600px;
 		max-width: 90%;
-		border: 1px solid grey;
-		border-radius: 8px;
 		cursor: pointer;
 		transition: 0.3s;
 	}
@@ -2541,7 +2544,7 @@ input, select, textarea {
 	.modal-caption {
 		margin: auto;
 		display: block;
-		width: 1000px;
+		width: 1200px;
 		max-width: 90%;
 		text-align: center;
 		color: #ccc;
@@ -2610,4 +2613,10 @@ input, select, textarea {
 	.zoomed {
 		transform: scale(2);
 		cursor: zoom-out;
+	}
+
+	figure .modal-trigger {
+		display: block;
+		margin: 0 auto;
+		width: auto;
 	}

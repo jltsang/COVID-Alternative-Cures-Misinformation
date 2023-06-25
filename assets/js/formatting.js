@@ -51,67 +51,109 @@ function formatInlineCode () {
 }
 
 // From https://www.w3schools.com/howto/howto_css_modal_images.asp
-function createModal(modalName) {
-	// Create the modal
+function createModal(modalObj) {
+
+	// Add id and class to trigger
+	modalObj.image.id = `${modalObj.name}-img`;
+	modalObj.image.classList.add("modal-trigger");
+
+	// Just wrap trigger in anchor if mobile
+	if (window.mobileCheck()) {
+		let anchor = document.createElement("a");
+		anchor.href = modalObj.image.src;
+		anchor.appendChild(modalObj.image.cloneNode(true));
+		modalObj.image.parentNode.replaceChild(anchor, modalObj.image);
+		return null;
+	}
+
+	// Create modal
 	let modal = document.createElement("div");
-	modal.id = `${modalName}-modal`;
+	modal.id = `${modalObj.name}-modal`;
 	modal.classList.add("modal");
 
+	// Create close button
 	let modalClose = document.createElement("span");
 	modalClose.innerText = "×";
-	modalClose.id = `${modalName}-close`;
+	modalClose.id = `${modalObj.name}-close`;
 	modalClose.classList.add("modal-close");
 	modal.appendChild(modalClose);
 
-	let img = document.getElementById(`${modalName}-img`);
+	// Create modal image
 	let modalImg = document.createElement("img");
-	modalImg.id = `${modalName}-modal-img`;
+	modalImg.id = `${modalObj.name}-modal-img`;
 	modalImg.classList.add("modal-image", "zoomable")
 	modal.appendChild(modalImg);
 
-
+	// Create modal caption
 	let modalCaption = document.createElement("div");
-	modalCaption.id = `${modalName}-modal-caption`;
+	modalCaption.id = `${modalObj.name}-modal-caption`;
 	modalCaption.classList.add("modal-caption");
 	modal.appendChild(modalCaption);
 
+	// Open event
 	let nav = document.getElementsByTagName("nav")[0];
 	let body = document.body;
-
-	img.onclick = function() {
-		modal.style.display = "block";
+	modalObj.image.onclick = function() {
+		modal.style.display = "flex";
 		nav.style.display = "none";
 		modalImg.src = this.src;
-		modalCaption.innerHTML = this.alt;
+		modalCaption.innerHTML = modalObj.captionText;
 		body.style.overflow = "hidden";
 	}
 
-	// When the user clicks on <span> (x), close the modal
+	// Close event
 	modalClose.onclick = function() {
 		modal.style.display = "none";
 		nav.style.display = "block";
 		body.style.overflow = "auto";
 	}
 
-	// Disable anchor to use modal instead
-	let anchor = document.getElementById(`${modalName}-anchor`);
-	anchor.removeAttribute("href");
-
 	return modal;
 }
 
 function createModals() {
-	let modalAnchors = document.querySelectorAll(".modal-anchor");
+	let modalsToMake = document.querySelectorAll(".to-modal");
 
-	modalAnchors.forEach(function(modalAnchor) {
-		// Get modal name
-		let modalName = modalAnchor.id.replace("-anchor", "");
-		
+	modalsToMake.forEach(function(modalImg) {
+		modalImg.classList.remove("to-modal");
+
+		let modalObj = {
+			name: modalImg.src.split('/').pop().split('.')[0],
+			image: modalImg,
+			captionText: modalImg.alt
+		}
+
 		// Create modal
-		let modal = createModal(modalName);
+		let modal = createModal(modalObj);
 
 		// Add modal to DOM
-		modalAnchor.insertAdjacentElement("afterend", modal);
+		if (modal) {
+			modalImg.insertAdjacentElement("afterend", modal);
+		}
+		
+	})
+
+	// Create modals for figures
+	let figures = document.querySelectorAll("figure");
+
+	figures.forEach(function(figure) {
+		let figureImages = figure.querySelectorAll("img");
+		let figureCaption = figure.querySelector("figcaption");
+
+		
+		figureImages.forEach(function(figureImage) {
+			let modalObj = {
+				name: figureImage.src.split('/').pop().split('.')[0],
+				image: figureImage,
+				captionText: figureCaption.innerText
+			}
+			
+			// Create modal
+			let modal = createModal(modalObj);
+
+			// Add modal to DOM
+			figureImage.insertAdjacentElement("afterend", modal);
+		})
 	})
 }
 
@@ -141,7 +183,5 @@ function implementZoom() {
 console.log(window.mobileCheck());
 fixCodeblockIndents();
 formatInlineCode();
-if (!window.mobileCheck()) {
-	createModals();
-}
+createModals();
 implementZoom();
