@@ -49,6 +49,7 @@ function createModal(modalName) {
 	// Get the modal
 	let modal = document.getElementById(`${modalName}-modal`);
 	let nav = document.getElementsByTagName("nav")[0];
+	let body = document.body;
 
 	// Get the image and insert it inside the modal - use its "alt" text as a caption
 	let img = document.getElementById(`${modalName}-img`);
@@ -59,6 +60,7 @@ function createModal(modalName) {
 		nav.style.display = "none";
 		modalImg.src = this.src;
 		captionText.innerHTML = this.alt;
+		body.style.overflow = "hidden";
 	}
 
 	// Get the <span> element that closes the modal
@@ -68,9 +70,9 @@ function createModal(modalName) {
 	span.onclick = function() {
 		modal.style.display = "none";
 		nav.style.display = "block";
+		body.style.overflow = "auto";
 	} 
 }
-
 
 fixCodeblockIndents();
 formatInlineCode();
