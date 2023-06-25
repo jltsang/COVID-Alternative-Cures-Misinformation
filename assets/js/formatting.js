@@ -52,43 +52,67 @@ function formatInlineCode () {
 
 // From https://www.w3schools.com/howto/howto_css_modal_images.asp
 function createModal(modalName) {
-	// Disable modal on mobile
-	if (window.mobileCheck()) {
-		let modal = document.getElementById(`${modalName}-modal`);
-		modal.remove();
-		return;
-	}
+	// Create the modal
+	let modal = document.createElement("div");
+	modal.id = `${modalName}-modal`;
+	modal.classList.add("modal");
 
-	// Get the modal
-	let modal = document.getElementById(`${modalName}-modal`);
+	let modalClose = document.createElement("span");
+	modalClose.innerText = "×";
+	modalClose.id = `${modalName}-close`;
+	modalClose.classList.add("modal-close");
+	modal.appendChild(modalClose);
+
+	let img = document.getElementById(`${modalName}-img`);
+	let modalImg = document.createElement("img");
+	modalImg.id = `${modalName}-modal-img`;
+	modalImg.classList.add("modal-image", "zoomable")
+	modal.appendChild(modalImg);
+
+
+	let modalCaption = document.createElement("div");
+	modalCaption.id = `${modalName}-modal-caption`;
+	modalCaption.classList.add("modal-caption");
+	modal.appendChild(modalCaption);
+
 	let nav = document.getElementsByTagName("nav")[0];
 	let body = document.body;
 
-	// Get the image and insert it inside the modal - use its "alt" text as a caption
-	let img = document.getElementById(`${modalName}-img`);
-	let modalImg = document.getElementById(`${modalName}-modal-img`);
-	let captionText = document.getElementById(`${modalName}-modal-caption`);
-	img.onclick = function(){
+	img.onclick = function() {
 		modal.style.display = "block";
 		nav.style.display = "none";
 		modalImg.src = this.src;
-		captionText.innerHTML = this.alt;
+		modalCaption.innerHTML = this.alt;
 		body.style.overflow = "hidden";
 	}
 
-	// Get the <span> element that closes the modal
-	let span = document.getElementById(`${modalName}-close`);
-
 	// When the user clicks on <span> (x), close the modal
-	span.onclick = function() {
+	modalClose.onclick = function() {
 		modal.style.display = "none";
 		nav.style.display = "block";
 		body.style.overflow = "auto";
-	} 
+	}
 
 	// Disable anchor to use modal instead
 	let anchor = document.getElementById(`${modalName}-anchor`);
 	anchor.removeAttribute("href");
+
+	return modal;
+}
+
+function createModals() {
+	let modalAnchors = document.querySelectorAll(".modal-anchor");
+
+	modalAnchors.forEach(function(modalAnchor) {
+		// Get modal name
+		let modalName = modalAnchor.id.replace("-anchor", "");
+		
+		// Create modal
+		let modal = createModal(modalName);
+
+		// Add modal to DOM
+		modalAnchor.insertAdjacentElement("afterend", modal);
+	})
 }
 
 function implementZoom() {
@@ -113,9 +137,11 @@ function implementZoom() {
 	})
 }
 
+
 console.log(window.mobileCheck());
 fixCodeblockIndents();
 formatInlineCode();
+if (!window.mobileCheck()) {
+	createModals();
+}
 implementZoom();
-createModal("poster");
-createModal("results");
