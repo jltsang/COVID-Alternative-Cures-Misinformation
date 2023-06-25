@@ -152,7 +152,10 @@ function createModals() {
 			let modal = createModal(modalObj);
 
 			// Add modal to DOM
-			figureImage.insertAdjacentElement("afterend", modal);
+			if (modal) {
+				figureImage.insertAdjacentElement("afterend", modal);
+			}
+			
 		})
 	})
 }
