@@ -2490,17 +2490,10 @@ input, select, textarea {
 		aspect-ratio: 3 / 2;
 	}
 
-	 /* Style the Image Used to Trigger the Modal */
-	#poster-img {
-		width: 600px;
-		max-width: 90%;
-		border: 1px solid grey;
-		border-radius: 8px;
-		cursor: pointer;
-		transition: 0.3s;
+	@keyframes zoom {
+		from {transform:scale(0)}
+		to {transform:scale(1)}
 	}
-
-	#poster-img:hover {opacity: 0.7;}
 
 	/* The Modal (background) */
 	.modal {
@@ -2525,8 +2518,27 @@ input, select, textarea {
 		max-width: 90%;
 	}
 
-	/* Caption of Modal Image (Image Text) - Same Width as the Image */
-	#poster-modal-caption {
+	/* 100% Image Width on Smaller Screens */
+	@media only screen and (max-width: 700px){
+		.modal-content {
+			width: 100%;
+		}
+	}
+
+	/* Style the Image Used to Trigger the Modal */
+	.modal-trigger {
+		width: 600px;
+		max-width: 90%;
+		border: 1px solid grey;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: 0.3s;
+	}
+
+	.modal-trigger:hover {opacity: 0.7;}
+
+	/* Modal Caption */
+	.modal-caption {
 		margin: auto;
 		display: block;
 		width: 1000px;
@@ -2536,22 +2548,17 @@ input, select, textarea {
 		padding: 10px 0;
 		height: 150px;
 		text-shadow: none;
-		font-size: 1.3em;
+		font-size: 1.2em;
 	}
 
 	/* Add Animation - Zoom in the Modal */
-	.modal-content, #caption {
+	.modal-content, .modal-caption {
 		animation-name: zoom;
 		animation-duration: 0.6s;
 	}
 
-	@keyframes zoom {
-		from {transform:scale(0)}
-		to {transform:scale(1)}
-	}
-
 	/* The Close Button */
-	.close {
+	.modal-close {
 		position: absolute;
 		top: 15px;
 		right: 35px;
@@ -2561,16 +2568,37 @@ input, select, textarea {
 		transition: 0.3s;
 	}
 
-	.close:hover,
-	.close:focus {
+	.modal-close:hover,
+	.modal-close:focus {
 		color: #bbb;
 		text-decoration: none;
 		cursor: pointer;
 	}
 
-	/* 100% Image Width on Smaller Screens */
-	@media only screen and (max-width: 700px){
-	.modal-content {
-			width: 100%;
+	#poster-img {
+		width: 600px;
+		max-width: 90%;
+		border: 1px solid rgb(212, 212, 212);
+		border-radius: 8px;
+		cursor: pointer;
+		transition: 0.3s;
 	}
-	} 
+
+	#poster-modal-img {
+		width: 1000px;
+		max-width: 90%;
+	}
+
+	#results-img {
+		width: 1000px;
+		max-width: 90%;
+		border: 1px solid rgb(230, 230, 230);
+		border-radius: 8px;
+		cursor: pointer;
+		transition: 0.3s;
+	}
+
+	#results-modal-img {
+		width: 1400px;
+		max-width: 90%;
+	}

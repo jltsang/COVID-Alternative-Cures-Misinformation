@@ -44,15 +44,16 @@ function formatInlineCode () {
 	});
 }
 
-function modalFunction() {
+// From https://www.w3schools.com/howto/howto_css_modal_images.asp
+function createModal(modalName) {
 	// Get the modal
-	var modal = document.getElementById("poster-modal");
+	let modal = document.getElementById(`${modalName}-modal`);
 	let nav = document.getElementsByTagName("nav")[0];
 
 	// Get the image and insert it inside the modal - use its "alt" text as a caption
-	var img = document.getElementById("poster-img");
-	var modalImg = document.getElementById("poster-modal-img");
-	var captionText = document.getElementById("poster-modal-caption");
+	let img = document.getElementById(`${modalName}-img`);
+	let modalImg = document.getElementById(`${modalName}-modal-img`);
+	let captionText = document.getElementById(`${modalName}-modal-caption`);
 	img.onclick = function(){
 		modal.style.display = "block";
 		nav.style.display = "none";
@@ -61,7 +62,7 @@ function modalFunction() {
 	}
 
 	// Get the <span> element that closes the modal
-	var span = document.getElementsByClassName("close")[0];
+	let span = document.getElementById(`${modalName}-close`);
 
 	// When the user clicks on <span> (x), close the modal
 	span.onclick = function() {
@@ -73,5 +74,5 @@ function modalFunction() {
 
 fixCodeblockIndents();
 formatInlineCode();
-modalFunction();
-
+createModal("poster");
+createModal("results");

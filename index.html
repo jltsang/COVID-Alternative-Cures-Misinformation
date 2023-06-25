@@ -165,6 +165,14 @@
 				<header>
 					<h2>And here are the results,</h2>
 				</header>
+				<div class="container">
+					<img id="results-img" class="modal-trigger" src="images/results.png" alt="Results visualization">
+					<div id="results-modal" class="modal">
+						<span id="results-close" class="modal-close">&times;</span>
+						<img id="results-modal-img" class="modal-content">
+						<div id="results-modal-caption" class="modal-caption"></div>
+					</div>
+				</div>
 				<div class="container" style="text-align: left;">
 					<h3>Discussion</h2>
 					<p>
@@ -225,11 +233,11 @@
 				<header>
 					<h2>Have a look at our poster!</h2>
 				</header>
-				<img id="poster-img" src="images/poster.png" alt="Project poster">
+				<img id="poster-img" class="modal-trigger" src="images/poster.png" alt="Project poster">
 				<div id="poster-modal" class="modal">
-					<span class="close">&times;</span>
-					<img class="modal-content" id="poster-modal-img">
-					<div id="poster-modal-caption"></div>
+					<span id="poster-close" class="modal-close">&times;</span>
+					<img id="poster-modal-img" class="modal-content">
+					<div id="poster-modal-caption" class="modal-caption"></div>
 				</div>
 				<!-- <footer>
 					<p>Want to learn more? Take a look at our source codes.</p>
