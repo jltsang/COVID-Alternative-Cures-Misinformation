@@ -52,10 +52,11 @@ function formatInlineCode () {
 
 // From https://www.w3schools.com/howto/howto_css_modal_images.asp
 function createModal(modalName) {
-	// Disable anchor on PC
-	let anchor = document.getElementById(`${modalName}-anchor`);
-	if (!window.mobileCheck()) {
-		anchor.removeAttribute("href");
+	// Disable modal on mobile
+	if (window.mobileCheck()) {
+		let modal = document.getElementById(`${modalName}-modal`);
+		modal.remove();
+		return;
 	}
 
 	// Get the modal
@@ -84,6 +85,10 @@ function createModal(modalName) {
 		nav.style.display = "block";
 		body.style.overflow = "auto";
 	} 
+
+	// Disable anchor to use modal instead
+	let anchor = document.getElementById(`${modalName}-anchor`);
+	anchor.removeAttribute("href");
 }
 
 function implementZoom() {
