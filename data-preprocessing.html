@@ -36,7 +36,7 @@
 					Before we begin exploring the data, preprocessing techniques must first be applied 
 					in order to ensure the cleanliness of the data.
 				</p>
-				<div class="container" style="text-align:left; margin-left: 40px;">
+				<div class="container" style="text-align:left;">
 					<h3>1. Handling missing values</h3>
 					<p>When looking for missing values, we can observe that <span class="emph">Account bio</span>, `Location`, `Tweet Translated`, `Screenshot`, `Views`, `Rating`, `Remarks`, `Reviewer`, `Review` are all listed.</p>
 					<pre style="tab-size: 4;" class="prettyprint">
@@ -67,7 +67,7 @@
 						<figcaption>The first 10 rows of the dataframe</figcaption>
 					</figure>
 				</div>
-				<div class="container" style="text-align:left; margin-left: 40px;">
+				<div class="container" style="text-align:left;">
 					<h3>2. Handling outliers</h3>
 					<p>After handling missing values, we turn our attention into possible outlier values. While we were able to preserve our samples by dropping columns when handling missing values, the same cannot be done for outlier data. These data can heavily affect our analysis and results later on.</p>
 					<p>Using the following code, we begin by looking into our outlier data based on each variable.</p>
@@ -154,7 +154,7 @@
 						</code>
 					</pre>
 				</div>
-				<div class="container" style="text-align:left; margin-left: 40px;">
+				<div class="container" style="text-align:left;">
 					<h3>3. Ensuring format consistency</h3>
 					<p>In order to ensure the validity and consistency of the data, a quick set of tests are conducted to find incorrectly-formatted data. To accomplish this, we created a mask with the correct format for each column and compared it with the dataset entries. As seen below we can see that the results show no formatting mistakes for all columns.</p>
 					<pre style="tab-size: 4;">
@@ -187,7 +187,7 @@
 						<figcaption>Output of the codeblock</figcaption>
 					</figure>
 				</div>
-				<div class="container" style="text-align:left; margin-left: 40px;">
+				<div class="container" style="text-align:left;">
 					<h3>4. Categorical data encoding</h3>
 					<p>Looking at our remaining columns, we can observe that there are two categorical variables, `Account type` and `Content type`. In order to use the following variable later on, we will need to convert these columns to numerical data. To accomplish this, we perform one-hot encoding on both categories.</p>
 					<pre style="tab-size: 4;">
@@ -209,7 +209,7 @@
 					</figure>
 					<p>This will make it easier to perform analysis and modeling with these variables later on, espcially beside other numerical data.</p>
 				</div>
-				<div class="container" style="text-align:left; margin-left: 40px;">
+				<div class="container" style="text-align:left;">
 					<h3>5. Natural Language Processing</h3>
 					<p>Now that we have made sure that our data set has no blemishes, we can begin with the processing. We make use of the NLP (Natural Language Processing) module found within Python in order for us to turn our dataset to a more structured and workable set</p>
 					<p>We begin our process by 'cleaning' the dataset and transforming special symbols such as emojis into words, as the usage of emojis may provide extra context to the tweets they are being used in.</p>
@@ -358,7 +358,7 @@
 					</figure>
 					<p>From the results, it was concluded that `steam` in this case `tuob` or `suob` was the most talked about "cure" for COVID, followed by `ginger`, `lemon`, `salt` and lastly, `vitamins`.</p>
 				</div>
-				<div class="container" style="text-align:left; margin-left: 40px;">
+				<div class="container" style="text-align:left;">
 					<h3>6. Time series analysis binning</h3>
 					<p>
 						In order to do a time series analysis of our data, specifically the `Date posted` 

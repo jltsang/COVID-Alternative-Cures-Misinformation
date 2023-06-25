@@ -2454,7 +2454,7 @@ input, select, textarea {
 	} */
 	code {
 		text-shadow: none;
-		font-size: 14px;
+		font-size: 0.8em;
 		white-space: pre;
 	}
 
@@ -2472,7 +2472,7 @@ input, select, textarea {
 	
 	span.emph {
 		font-family: 'Source Code Pro', monospace;
-		font-size: 15px;
+		font-size: 0.8em;
 		background: #dadada83;
 		color: #555555;
 		text-shadow: none;
@@ -2582,7 +2582,7 @@ input, select, textarea {
 		width: 600px;
 		max-width: 90%;
 		border: 1px solid rgb(212, 212, 212);
-		border-radius: 8px;
+		border-radius: 0.7rem;
 		cursor: pointer;
 		transition: 0.3s;
 	}
@@ -2596,7 +2596,7 @@ input, select, textarea {
 		width: 1000px;
 		max-width: 90%;
 		border: 1px solid rgb(230, 230, 230);
-		border-radius: 8px;
+		border-radius: 0.4rem;
 		cursor: pointer;
 		transition: 0.3s;
 	}
@@ -2619,4 +2619,10 @@ input, select, textarea {
 		display: block;
 		margin: 0 auto;
 		width: auto;
+	}
+
+	nav {
+		overflow-x: auto;
+		overflow-y: hidden;
+		white-space: nowrap;
 	}
